@@ -18,7 +18,6 @@ const Signup = () => {
     const { setUser } = useAuthStore((state) => state);
 
     const Sign = async (values: FieldValues) => {
-        setUser(values);
         /*  try {
             const res = await fetch("", {
                 method: "Post",

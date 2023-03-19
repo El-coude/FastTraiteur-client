@@ -30,6 +30,10 @@ type AuthStoreType = {
     setUser: (user: UserType) => void;
 };
 
-export type UserType = {} | null;
+export type UserType = {
+    access_token: string;
+    refresh_token: string;
+    phone: string;
+} | null;
 
 export default useAuthStore;

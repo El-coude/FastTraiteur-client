@@ -5,7 +5,7 @@
         "strict": true,
         "target": "esnext",
         "baseUrl": ".",
-        
+        "typeRoots": ["./src/types"],
         "noImplicitAny": true,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
