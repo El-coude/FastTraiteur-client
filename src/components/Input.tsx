@@ -1,6 +1,11 @@
 import React, { forwardRef } from "react";
-import { Text, TextInput, TextInputProps } from "react-native";
-import { useController, Control, FieldValues } from "react-hook-form";
+import { Text, TextInput, TextInputProps, View } from "react-native";
+import {
+    useController,
+    Control,
+    FieldValues,
+    ControllerRenderProps,
+} from "react-hook-form";
 
 export type InputProps = TextInputProps & {
     label?: string;
@@ -10,24 +15,27 @@ export type InputProps = TextInputProps & {
     name: string;
 };
 const Input = forwardRef<TextInput, InputProps>((props, ref) => {
-    const { field } = useController({
-        control: props.control,
-        defaultValue: "",
-        name: props.name,
-    });
+    let field: ControllerRenderProps<FieldValues, string> | undefined;
+    if (props.control)
+        field = useController({
+            control: props.control,
+            defaultValue: "",
+            name: props.name,
+        }).field;
     return (
-        <>
-            <Text className={`font-bold w-full ${props.labelStyle}`}>
+        <View className="w-full">
+            <Text
+                className={`font-bold w-full text-xs text-grey-2 ${props.labelStyle}`}>
                 {props.label}
             </Text>
             <TextInput
                 {...props}
                 ref={ref}
-                className={`rounded-lg bg-white border border-gray-300 p-2 my-2 w-full ${props.className}`}
-                value={field.value}
-                onChangeText={field.onChange}
+                className={`font-bold rounded-md bg-transparent p-2 border border-gray-400 my-1 w-full ${props.className}`}
+                value={field?.value}
+                onChangeText={field?.onChange || props.onChangeText}
             />
-        </>
+        </View>
     );
 });
 

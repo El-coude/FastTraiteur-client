@@ -18,6 +18,7 @@
         "strictFunctionTypes": true,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
+        
     },
     "exclude": [
         "babel.config.js",

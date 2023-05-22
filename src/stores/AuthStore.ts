@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URI } from "@env";
 
 export type AsyncStoreType = {
     hasHydrated?: boolean;
@@ -8,9 +9,24 @@ export type AsyncStoreType = {
 };
 const useAuthStore = create<AsyncStoreType & AuthStoreType>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             hasHydrated: false,
-            setHasHydrated: (val) => set(() => ({ hasHydrated: val })),
+            setHasHydrated: async (val) => {
+                set(() => ({ hasHydrated: val }));
+                if (get().user) {
+                    const userStillExits = await (
+                        await fetch(`${API_URI}/clients/${get().user?.id!}`, {
+                            method: "get",
+                            headers: {
+                                "Content-type": "application/json",
+                            },
+                        })
+                    ).json();
+                    if (!userStillExits.exists) {
+                        get().setUser(null);
+                    }
+                }
+            },
 
             user: null,
             setUser: (user) => set(() => ({ user })),
@@ -32,8 +48,15 @@ type AuthStoreType = {
 
 export type UserType = {
     access_token: string;
-    refresh_token: string;
+    id: number;
+    name: string;
     phone: string;
+    isConfirmed: boolean;
+    createdAt: string;
+    address?: string;
+    longtitud?: number;
+    latitud?: number;
+    imageUrl?: string;
 } | null;
 
 export default useAuthStore;

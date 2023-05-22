@@ -3,8 +3,11 @@ import { API_URI } from "@env";
 
 const useMutate = <BodyDataType, ResultDataType>(
     endPoint: string,
-    onSuccess?: (res: any) => void,
-    onFail?: (err: any) => void
+    options?: {
+        onSuccess?: (res: any) => void;
+        onFail?: (err: any) => void;
+        method?: string;
+    }
 ) => {
     const {
         mutate,
@@ -13,11 +16,12 @@ const useMutate = <BodyDataType, ResultDataType>(
         data: result,
     } = useMutation<ResultDataType, any, BodyDataType>(
         async (data: BodyDataType) => {
+            console.log(`${API_URI}/${endPoint}`);
             const res = await (
                 await fetch(
-                    `https://00bb-105-235-139-15.in.ngrok.io/${endPoint}`,
+                    `${"https://fasttraiteur.onrender.com"}/${endPoint}`,
                     {
-                        method: "post",
+                        method: options?.method || "post",
                         headers: {
                             "Content-type": "application/json",
                         },
@@ -26,16 +30,19 @@ const useMutate = <BodyDataType, ResultDataType>(
                 )
             ).json();
             if (res.statusCode >= 400) {
+                console.log(res);
+
                 throw new Error(res.message);
             }
+            console.log(res);
             return res;
         },
         {
             onSettled: (res) => {
-                onSuccess && onSuccess(res);
+                options?.onSuccess && options?.onSuccess(res);
             },
             onError: (err) => {
-                onFail && onFail(err);
+                options?.onFail && options?.onFail(err);
             },
         }
     );

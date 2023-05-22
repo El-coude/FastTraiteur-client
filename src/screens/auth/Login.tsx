@@ -8,7 +8,7 @@ import { validatePassword } from "../../utils/Validators";
 import useMutate from "../../hooks/useMutate";
 
 export type LoginInfo = {
-    email: string;
+    phone: string;
     password: string;
 };
 
@@ -24,18 +24,18 @@ const Login = () => {
     const { setUser } = useAuthStore((state) => state);
     const { mutate, isLoading, error } = useMutate<
         LoginInfo,
-        Partial<UserType>
-    >("auth/local/signin");
+        { client: UserType }
+    >("auth/clients/signin");
 
     const login = async (values: FieldValues) => {
         mutate(
             {
-                email: values.user,
+                phone: values.phone,
                 password: values.password,
             },
             {
                 onSuccess: (result) => {
-                    console.log("res" + result);
+                    setUser(result.client);
                 },
             }
         );
@@ -43,19 +43,20 @@ const Login = () => {
     return (
         <>
             <Text className="text-err-1 text-start w-full my-4 font-bold">
-                {error?.message + "!" || ""}
+                {error?.message || ""}
             </Text>
             <Input
                 placeholder="Enter phone number"
                 label="Phone number"
                 control={control}
                 inputMode="tel"
-                {...register("user", {
+                {...register("phone", {
                     required: true,
-                    minLength: 10,
-                    maxLength: 10,
+                    minLength: 13,
+                    maxLength: 13,
+                    pattern: /\+213\d{9}/,
                 })}
-                className={`${errors.user ? "border-err-1 border-2" : ""}`}
+                className={`${errors.phone ? "border-err-1 border-2" : ""}`}
             />
             <Input
                 placeholder="Enter password"
@@ -78,12 +79,11 @@ const Login = () => {
                 title="fill"
                 style="my-4"
                 onPress={() => {
-                    setValue("user", "0669215342");
+                    setValue("phone", "+213669215342");
                     setValue("password", "17102001cH");
                 }}
-                loading={isLoading}
             />
-            <View className="flex items-center flex-row gap-2 mt-4">
+            <View className="flex items-center flex-row gap-2 mt-4 text-center">
                 <Text>Don't have an account ?</Text>
                 <Link to="/signup" className="">
                     <Text className="text-pri-5 font-bold">Sign up</Text>

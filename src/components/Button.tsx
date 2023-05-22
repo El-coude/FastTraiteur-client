@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react";
-import {
-    Text,
-    Pressable,
-    ButtonProps,
-    Animated,
-    View,
-    Easing,
-} from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
+import { ReactElement, useState } from "react";
+import { Text, Pressable, ButtonProps, Animated, View } from "react-native";
+import Loading from "./Loading";
 
 type CustomButtonProps = ButtonProps & {
     style?: string;
+    rounded?: boolean;
+
     titleStyle?: string;
     loading?: boolean;
+    icon?: ReactElement;
 };
 export default function Button(props: CustomButtonProps) {
     const [pressed, setPressed] = useState(false);
@@ -39,36 +35,12 @@ export default function Button(props: CustomButtonProps) {
         transform: [{ scale: animatedButtonScale }],
     };
 
-    const spin = new Animated.Value(0);
-    useEffect(() => {
-        const animation = Animated.loop(
-            Animated.timing(spin, {
-                toValue: 1,
-                duration: 1000,
-                easing: Easing.linear,
-                useNativeDriver: true,
-            })
-        );
-        if (props.loading) {
-            animation.start();
-        } else {
-            animation.stop();
-        }
-        return () => {
-            animation.stop();
-        };
-    }, [props.loading]);
-    const spinAnimation = spin.interpolate({
-        inputRange: [0, 1],
-        outputRange: ["0deg", "360deg"],
-    });
-
     return (
         <Animated.View
             style={[animatedScaleStyle]}
-            className={`w-full rounded-lg px-2 py-3 transition ${props.style} ${
-                pressed ? "scale-90" : ""
-            }`}>
+            className={`w-full px-2 py-3 transition ${
+                props.rounded ? "rounded-full" : "rounded-lg"
+            } ${props.style} ${pressed ? "scale-90" : ""}`}>
             <Pressable
                 className=""
                 onPress={(e) => {
@@ -77,20 +49,14 @@ export default function Button(props: CustomButtonProps) {
                 onPressIn={onPressIn}
                 onPressOut={onPressOut}>
                 <View className="flex items-center flex-row w-fit m-auto ">
-                    <Text
-                        className={`text-center text-white font-bold mx-4 ${props.titleStyle}`}>
-                        {props.title}
-                    </Text>
-                    <Animated.View
-                        style={{ transform: [{ rotate: spinAnimation }] }}>
-                        {props.loading && (
-                            <EvilIcons
-                                name="spinner-3"
-                                size={18}
-                                color="white"
-                            />
-                        )}
-                    </Animated.View>
+                    {props.title && (
+                        <Text
+                            className={`text-center text-white font-bold mx-4 ${props.titleStyle}`}>
+                            {props.title}
+                        </Text>
+                    )}
+                    {props.icon && !props.loading && props.icon}
+                    <Loading visible={!!props.loading} />
                 </View>
             </Pressable>
         </Animated.View>
@@ -99,4 +65,18 @@ export default function Button(props: CustomButtonProps) {
 
 export const PrimaryButton = (props: CustomButtonProps) => {
     return <Button {...props} style={`bg-pri-4 ${props.style}`} />;
+};
+
+export const OutlineButton = (props: CustomButtonProps) => {
+    return (
+        <Button
+            {...props}
+            style={`bg-transparent border border-black ${props.style}`}
+            titleStyle="text-black"
+        />
+    );
+};
+
+export const IconButton = (props: CustomButtonProps) => {
+    return <Button {...props} style={`bg-transparent ${props.style}`} />;
 };
