@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
 
 const PickFromMap = ({
     setInfo,
+    default: defaultPos,
 }: {
     close: () => void;
     setInfo: Dispatch<
@@ -50,10 +51,11 @@ const PickFromMap = ({
             address?: string;
         }>
     >;
+    default?: [number, number];
 }) => {
-    const [cords, setCords] = useState({
-        longtitud: 1.105,
-        latitud: 34.906,
+    const [cords] = useState({
+        longtitud: defaultPos ? defaultPos[1] : 1.105,
+        latitud: defaultPos ? defaultPos[0] : 34.906,
     });
     const mapRef = useRef<MapView>(null!);
     useEffect(() => {
@@ -96,13 +98,16 @@ const PickFromMap = ({
 
     return (
         <>
-            <View className="absolute top-14 rounded-lg left-0 z-20  w-full h-4/5">
+            <View className="absolute top-0 rounded-lg left-0 z-20  w-screen h-[80vh]">
                 <MapboxGL.MapView ref={mapRef} style={styles.map} zoomEnabled>
-                    <Camera zoomLevel={6} centerCoordinate={[1.105, 34.906]} />
+                    <Camera
+                        zoomLevel={6}
+                        centerCoordinate={[cords.longtitud, cords.latitud]}
+                    />
                 </MapboxGL.MapView>
                 <PrimaryButton
                     title="Confirm"
-                    style="w-full mt-4"
+                    style="w-full"
                     onPress={async () => {
                         const center = await mapRef.current?.getCenter();
                         const address = await fetchLocationInfo(

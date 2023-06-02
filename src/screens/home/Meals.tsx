@@ -63,7 +63,7 @@ const Item = (props: Partial<Meal>) => {
         <Link
             to={`/meal/${props.id}`}
             state={props}
-            className="w-[50%] rounded-2xl bg-slate-50 shadow-xl min-h-[300px] self-start flex flex-1 justify-start  mx-2 mb-4 pb-2">
+            className="max-w-[150px] rounded-2xl bg-slate-50 shadow-xl min-h-[300px] self-start flex flex-1 justify-start  mx-2 mb-4 pb-2">
             <>
                 {!!props.images?.length && (
                     <Image

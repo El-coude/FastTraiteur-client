@@ -4,20 +4,33 @@ import useCartStore, { CartItem } from "../../stores/CartStore";
 import { FlatList, Image, Text, View } from "react-native";
 import Quantity from "../../components/Quantity";
 import { Link } from "react-router-native";
+import { EvilIcons } from "@expo/vector-icons";
+import { PrimaryButton } from "../../components/Button";
 
 const Cart = () => {
-    const { cart } = useCartStore((state) => state);
-    console.log(cart);
+    const { cart, total } = useCartStore((state) => state);
     return (
         <>
             <NavigateBack />
-            <View className="w-full py-10 px-6">
+            <View className="w-full h-screen py-10 px-6">
                 <FlatList
                     data={cart}
                     renderItem={({ item }) => <Item {...item} />}
                     numColumns={1}
                     keyExtractor={(item) => item.meal.id.toString()}
                 />
+                <View className="flex flex-1 flex-row items-end justify-between mb-10 w-4/5">
+                    <Text
+                        style={{ fontFamily: "DM-Bold" }}
+                        className="mr-2 mb-1 text-lg">
+                        {total}D.A
+                    </Text>
+                    <PrimaryButton
+                        title="Checkout"
+                        rounded
+                        onPress={() => {}}
+                    />
+                </View>
             </View>
         </>
     );
@@ -25,6 +38,7 @@ const Cart = () => {
 
 const Item = ({ meal, quantity }: CartItem) => {
     const [quan, setQuantity] = useState(quantity);
+    const { cart, removeItem } = useCartStore((state) => state);
     const { updateItemQuantity } = useCartStore((state) => state);
     useEffect(() => {
         if (quan !== quantity) {
@@ -50,6 +64,14 @@ const Item = ({ meal, quantity }: CartItem) => {
                         count={quan}
                         setCount={setQuantity}
                     />
+                    <View className="mb-1">
+                        <EvilIcons
+                            name="trash"
+                            size={24}
+                            color="red"
+                            onPress={() => removeItem(meal.id)}
+                        />
+                    </View>
                 </View>
             </View>
         </View>

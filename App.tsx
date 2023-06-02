@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { NativeRouter } from "react-router-native";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
 import { QueryClientProvider, QueryClient } from "react-query";
 import AppRoutes from "./src/routes/AppRoutes";
@@ -16,16 +16,10 @@ export default function App() {
         <NativeRouter>
             <QueryClientProvider client={client}>
                 <StatusBar animated={true} />
-                <ScrollView
-                    className="bg-slate-100 text-grey-2 pt-4 relative"
-                    contentContainerStyle={{
-                        flex: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}>
+                <View className="bg-white flex-1">
                     <AppRoutes />
                     <Toast />
-                </ScrollView>
+                </View>
             </QueryClientProvider>
         </NativeRouter>
     );

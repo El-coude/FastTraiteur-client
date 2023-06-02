@@ -113,6 +113,11 @@ const Profile = () => {
                         }))
                     }
                     setInfo={setMap}
+                    default={
+                        map.latitud && map.longtitud
+                            ? [map.latitud, map.longtitud]
+                            : undefined
+                    }
                 />
             )}
             <PrimaryButton

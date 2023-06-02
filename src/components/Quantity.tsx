@@ -12,7 +12,7 @@ const Quantity = ({
 }) => {
     return (
         <View
-            className={`rounded-full bg-pri-1 flex flex-1 items-center justify-between flex-row p-1 ${
+            className={`rounded-full bg-pri-1 flex  flex-1 items-center justify-between flex-row p-1 ${
                 size == "small" ? "max-w-[70px] " : "max-w-[100px] "
             }`}>
             <View

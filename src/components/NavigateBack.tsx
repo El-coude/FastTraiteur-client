@@ -10,6 +10,8 @@ const NavigateBack = ({ path }: { path?: string }) => {
             onTouchStart={() => {
                 if (path) {
                     navigate(path);
+                } else {
+                    navigate(-1);
                 }
             }}>
             <Ionicons name="chevron-back" size={24} color="black" />

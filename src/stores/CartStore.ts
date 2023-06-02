@@ -12,10 +12,10 @@ const useCartStore = create<AsyncStoreType & StoreType>()(
     persist(
         (set, get) => ({
             cart: [],
-
+            total: 0,
             setCart: (items) => set({ cart: items }),
             addItem: (item) =>
-                set(({ cart }) => {
+                set(({ cart, total }) => {
                     const alreadyExists = cart
                         .map((cr) => cr.meal)
                         .find((it) => it.id == item.meal.id);
@@ -26,20 +26,49 @@ const useCartStore = create<AsyncStoreType & StoreType>()(
                         );
                         return {};
                     }
-                    return { cart: [...cart, item] };
+
+                    return {
+                        cart: [...cart, item],
+                        total:
+                            total + parseFloat(item.meal.price) * item.quantity,
+                    };
                 }),
             updateItemQuantity: (itemId, quantity) =>
-                set(({ cart }) => ({
-                    cart: cart.map((item) =>
-                        item.meal.id === itemId ? { ...item, quantity } : item
-                    ),
-                })),
-            removeItem: (item) =>
-                set(({ cart }) => ({
-                    cart: cart.filter(
-                        (cartItem) => cartItem.meal.id !== item.meal.id
-                    ),
-                })),
+                set(({ cart, total }) => {
+                    let prev: CartItem | null = null;
+                    const newItems = cart.map((item) => {
+                        if (item.meal.id === itemId) {
+                            prev = { ...item };
+                            return { ...item, quantity };
+                        }
+                        return item;
+                    });
+
+                    return {
+                        cart: newItems,
+                        total:
+                            total -
+                            parseFloat(prev!.meal.price) * prev!.quantity +
+                            parseFloat(prev!.meal.price) * quantity,
+                    };
+                }),
+
+            removeItem: (id) =>
+                set(({ cart, total }) => {
+                    let deleted: CartItem | null = null;
+                    const newItems = cart.filter((cartItem) => {
+                        if (cartItem.meal.id !== id) return true;
+                        deleted = cartItem;
+                        return false;
+                    });
+
+                    return {
+                        cart: newItems,
+                        total:
+                            total -
+                            parseFloat(deleted!.meal.price) * deleted!.quantity,
+                    };
+                }),
         }),
         {
             name: "Cart",
@@ -53,11 +82,11 @@ const useCartStore = create<AsyncStoreType & StoreType>()(
 
 type StoreType = {
     cart: CartItem[];
-
+    total: number;
     setCart: (items: CartItem[]) => void;
     addItem: (item: CartItem) => void;
     updateItemQuantity: (itemId: number, quantity: number) => void;
-    removeItem: (item: CartItem) => void;
+    removeItem: (itemId: number) => void;
 };
 export type CartItem = {
     meal: Meal;

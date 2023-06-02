@@ -6,6 +6,7 @@ import Quantity from "../../components/Quantity";
 import { PrimaryButton } from "../../components/Button";
 import useCartStore from "../../stores/CartStore";
 import { Feather } from "@expo/vector-icons";
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 const Meal = () => {
     const { state: meal } = useLocation();
@@ -66,12 +67,16 @@ const Meal = () => {
                             title="ADD TO CART"
                             rounded
                             style=""
-                            onPress={() =>
+                            onPress={() => {
+                                Toast.show({
+                                    type: "success",
+                                    text1: "Meal added to cart",
+                                });
                                 addItem({
                                     meal,
                                     quantity,
-                                })
-                            }
+                                });
+                            }}
                         />
                     </View>
                 </View>
