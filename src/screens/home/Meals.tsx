@@ -1,15 +1,11 @@
-import {
-    FlatList,
-    Image,
-    NativeScrollEvent,
-    NativeSyntheticEvent,
-    Text,
-    View,
-} from "react-native";
+import { FlatList, Image, Text, View } from "react-native";
 import Loading from "../../components/Loading";
 import useFetch from "../../hooks/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "react-router-native";
+import { useEffect } from "react";
+import useFilterStore from "../../stores/MealFilter";
+import useAuthStore from "../../stores/AuthStore";
 
 export type Meal = {
     id: number;
@@ -21,22 +17,27 @@ export type Meal = {
     description: string;
     price: string;
 };
+
 const Meals = () => {
+    const { search, price, distance, category } = useFilterStore(
+        (state) => state
+    );
+    const { user } = useAuthStore((state) => state);
     const {
         result: meals,
         isLoading,
         error,
         refetch,
-    } = useFetch<Meal[]>("meals");
+    } = useFetch<Meal[]>(
+        `meals/filter?userId=${user?.id}&name=${search}${
+            price ? `&minPrice=${price.min}&maxPrice=${price.max}` : ""
+        }&distanceRange=${distance}&categoryId=${category}`
+    );
+    useEffect(() => {
+        console.log(meals);
+        refetch();
+    }, [category, search]);
 
-    const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const scrollPosition = e.nativeEvent.contentOffset.y;
-        if (scrollPosition === 0) {
-            // Scrolled to the top
-            console.log("Scrolled to the top");
-            refetch();
-        }
-    };
     if (isLoading)
         return (
             <View className="m-auto">
@@ -47,9 +48,19 @@ const Meals = () => {
         return (
             <Text className="text-err-1 m-auto">⚠️ Failed to load meals</Text>
         );
+    if (!meals?.length)
+        return (
+            <Text className="text-black text-xl m-auto">
+                No meals are founded !
+            </Text>
+        );
     return (
         <FlatList
-            onScroll={handleScroll}
+            id="meals"
+            refreshing={false}
+            onRefresh={async () => {
+                await refetch();
+            }}
             data={meals}
             renderItem={({ item }) => <Item {...item} />}
             numColumns={2}
@@ -63,6 +74,7 @@ const Item = (props: Partial<Meal>) => {
         <Link
             to={`/meal/${props.id}`}
             state={props}
+            underlayColor="#ffffffff"
             className="max-w-[150px] rounded-2xl bg-slate-50 shadow-xl min-h-[300px] self-start flex flex-1 justify-start  mx-2 mb-4 pb-2">
             <>
                 {!!props.images?.length && (

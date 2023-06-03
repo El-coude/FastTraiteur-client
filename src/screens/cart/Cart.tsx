@@ -1,36 +1,60 @@
 import React, { useEffect, useState } from "react";
 import NavigateBack from "../../components/NavigateBack";
 import useCartStore, { CartItem } from "../../stores/CartStore";
-import { FlatList, Image, Text, View } from "react-native";
+import { FlatList, Image, Modal, Text, View } from "react-native";
 import Quantity from "../../components/Quantity";
 import { Link } from "react-router-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { PrimaryButton } from "../../components/Button";
+import OrderConfirmation from "../order/OrderConfirmation";
+const empty = require("../../../assets/empty-cart.png");
 
 const Cart = () => {
     const { cart, total } = useCartStore((state) => state);
+    const [confirmation, setConfirmation] = useState(false);
+    /*   const {isLoading, mutate}  = useMutate("order");
+
+    const save = () => {
+        mutate({}, {
+            on
+        })
+    } */
+
     return (
         <>
             <NavigateBack />
             <View className="w-full h-screen py-10 px-6">
-                <FlatList
-                    data={cart}
-                    renderItem={({ item }) => <Item {...item} />}
-                    numColumns={1}
-                    keyExtractor={(item) => item.meal.id.toString()}
-                />
-                <View className="flex flex-1 flex-row items-end justify-between mb-10 w-4/5">
-                    <Text
-                        style={{ fontFamily: "DM-Bold" }}
-                        className="mr-2 mb-1 text-lg">
-                        {total}D.A
-                    </Text>
-                    <PrimaryButton
-                        title="Checkout"
-                        rounded
-                        onPress={() => {}}
-                    />
-                </View>
+                {cart.length > 0 ? (
+                    <>
+                        <FlatList
+                            data={cart}
+                            renderItem={({ item }) => <Item {...item} />}
+                            numColumns={1}
+                            keyExtractor={(item) => item.meal.id.toString()}
+                        />
+                        <View className="flex flex-1 flex-row items-end justify-between mb-10 w-4/5">
+                            <Text
+                                style={{ fontFamily: "DM-Bold" }}
+                                className="mr-2 mb-1 text-lg">
+                                {total}D.A
+                            </Text>
+                            <PrimaryButton
+                                title="ORDER NOW"
+                                rounded
+                                onPress={() => setConfirmation(true)}
+                            />
+                        </View>
+                        <Modal
+                            visible={confirmation}
+                            onRequestClose={() => setConfirmation(false)}>
+                            <OrderConfirmation />
+                        </Modal>
+                    </>
+                ) : (
+                    <>
+                        <Image source={empty} style={{ width: 300 }} />
+                    </>
+                )}
             </View>
         </>
     );
@@ -38,7 +62,7 @@ const Cart = () => {
 
 const Item = ({ meal, quantity }: CartItem) => {
     const [quan, setQuantity] = useState(quantity);
-    const { cart, removeItem } = useCartStore((state) => state);
+    const { removeItem } = useCartStore((state) => state);
     const { updateItemQuantity } = useCartStore((state) => state);
     useEffect(() => {
         if (quan !== quantity) {
@@ -47,7 +71,10 @@ const Item = ({ meal, quantity }: CartItem) => {
     }, [quan]);
     return (
         <View className="flex flex-row items-center justify-start gap-4 py-4 border-b border-gray-400 w-full">
-            <Link to={`/meal/${meal.id}`} state={meal}>
+            <Link
+                to={`/meal/${meal.id}`}
+                state={meal}
+                underlayColor="#ffffffff">
                 <Image
                     source={{ uri: meal.images[0].url }}
                     style={{ width: 100, height: 80 }}

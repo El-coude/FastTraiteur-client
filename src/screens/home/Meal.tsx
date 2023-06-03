@@ -14,7 +14,7 @@ const Meal = () => {
     const { addItem, cart } = useCartStore((state) => state);
     return (
         <>
-            <NavigateBack path="/dashboard" />
+            <NavigateBack />
             <View className="h-full w-full">
                 {meal.images.length > 0 && (
                     <Image

@@ -7,7 +7,7 @@ const useFetch = <ResultDataType>(endPoint: string) => {
         error,
         refetch,
         data: result,
-    } = useQuery<ResultDataType, any>("data", async () => {
+    } = useQuery<ResultDataType, any>(endPoint, async () => {
         console.log(`${API_URI}/${endPoint}`);
         const res = await (
             await fetch(`${"https://fasttraiteur.onrender.com"}/${endPoint}`, {
