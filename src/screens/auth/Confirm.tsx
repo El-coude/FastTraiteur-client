@@ -69,7 +69,7 @@ const Confirm = () => {
         );
     };
     return (
-        <>
+        <View className="py-20 px-4">
             <Text className="font-bold text-lg text-center">
                 Enter the verification code sent to {user?.phone}
             </Text>
@@ -94,18 +94,22 @@ const Confirm = () => {
                 loading={isLoading}
             />
             <View className="flex items-center flex-row gap-2 mt-4">
-                <Text>Didn't receive one ?</Text>
-                <Text className="text-pri-5 font-bold" onPress={send}>
+                <Text className="text-center">Didn't receive one ?</Text>
+                <Text
+                    className="text-pri-5 font-bold text-center"
+                    onPress={send}>
                     Send again
                 </Text>
             </View>
             <View className="flex items-center flex-row gap-2 mt-4">
                 <Text>Not your phone number ?</Text>
                 <Link to="/signup" onPress={() => setUser(null)}>
-                    <Text className="text-pri-5 font-bold">Sign up again</Text>
+                    <Text className="text-pri-5 font-bold text-center">
+                        Sign up again
+                    </Text>
                 </Link>
             </View>
-        </>
+        </View>
     );
 };
 

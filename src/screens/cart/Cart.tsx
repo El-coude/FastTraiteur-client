@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from "react";
 import NavigateBack from "../../components/NavigateBack";
 import useCartStore, { CartItem } from "../../stores/CartStore";
-import { FlatList, Image, Modal, Text, View } from "react-native";
+import { FlatList, Image, Text, View } from "react-native";
 import Quantity from "../../components/Quantity";
-import { Link } from "react-router-native";
+import { Link, useNavigate } from "react-router-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { PrimaryButton } from "../../components/Button";
-import OrderConfirmation from "../order/OrderConfirmation";
 const empty = require("../../../assets/empty-cart.png");
 
 const Cart = () => {
     const { cart, total } = useCartStore((state) => state);
-    const [confirmation, setConfirmation] = useState(false);
-    /*   const {isLoading, mutate}  = useMutate("order");
-
-    const save = () => {
-        mutate({}, {
-            on
-        })
-    } */
+    const navigate = useNavigate();
 
     return (
         <>
             <NavigateBack />
-            <View className="w-full h-screen py-10 px-6">
+            <View className="w-full h-[98%] py-10 px-6">
                 {cart.length > 0 ? (
                     <>
                         <FlatList
@@ -41,14 +33,9 @@ const Cart = () => {
                             <PrimaryButton
                                 title="ORDER NOW"
                                 rounded
-                                onPress={() => setConfirmation(true)}
+                                onPress={() => navigate("/order-confirm")}
                             />
                         </View>
-                        <Modal
-                            visible={confirmation}
-                            onRequestClose={() => setConfirmation(false)}>
-                            <OrderConfirmation />
-                        </Modal>
                     </>
                 ) : (
                     <>

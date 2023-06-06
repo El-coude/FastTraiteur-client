@@ -16,25 +16,29 @@ export type Meal = {
     }[];
     description: string;
     price: string;
+    restaurantId: number;
 };
+
+type FetchResponse = {
+    restaurant: {
+        name: string;
+        id: number;
+    };
+    meals: Meal[];
+}[];
 
 const Meals = () => {
     const { search, price, distance, category } = useFilterStore(
         (state) => state
     );
     const { user } = useAuthStore((state) => state);
-    const {
-        result: meals,
-        isLoading,
-        error,
-        refetch,
-    } = useFetch<Meal[]>(
+    const { result, isLoading, error, refetch } = useFetch<FetchResponse>(
         `meals/filter?userId=${user?.id}&name=${search}${
             price ? `&minPrice=${price.min}&maxPrice=${price.max}` : ""
         }&distanceRange=${distance}&categoryId=${category}`
     );
     useEffect(() => {
-        console.log(meals);
+        console.log(result);
         refetch();
     }, [category, search]);
 
@@ -48,23 +52,43 @@ const Meals = () => {
         return (
             <Text className="text-err-1 m-auto">⚠️ Failed to load meals</Text>
         );
-    if (!meals?.length)
+    if (result?.every((res) => !res.meals.length))
         return (
             <Text className="text-black text-xl m-auto">
                 No meals are founded !
             </Text>
         );
+
+    const List = ({ res }: { res: FetchResponse[0] }) => {
+        return (
+            <>
+                <Text
+                    className="text-xl my-4"
+                    style={{ fontFamily: "DM-Bold" }}>
+                    Restaurnt {res.restaurant.name}
+                </Text>
+                <FlatList
+                    id="meals"
+                    data={res.meals}
+                    renderItem={({ item }) => <Item {...item} />}
+                    horizontal
+                    keyExtractor={(item) => item.id.toString()}
+                />
+            </>
+        );
+    };
     return (
         <FlatList
-            id="meals"
+            id="lists"
             refreshing={false}
             onRefresh={async () => {
                 await refetch();
             }}
-            data={meals}
-            renderItem={({ item }) => <Item {...item} />}
-            numColumns={2}
-            keyExtractor={(item) => item.id.toString()}
+            data={result?.filter((res) => res.meals.length > 0)}
+            renderItem={({ item }) => <List res={item} />}
+            numColumns={1}
+            keyExtractor={(item) => item.restaurant.id.toString()}
+            style={{ flexGrow: 1, height: "70%" }}
         />
     );
 };
@@ -75,7 +99,7 @@ const Item = (props: Partial<Meal>) => {
             to={`/meal/${props.id}`}
             state={props}
             underlayColor="#ffffffff"
-            className="max-w-[150px] rounded-2xl bg-slate-50 shadow-xl min-h-[300px] self-start flex flex-1 justify-start  mx-2 mb-4 pb-2">
+            className="w-[150px] rounded-2xl bg-slate-50 shadow-xl min-h-[300px] mx-2 mb-4 pb-2">
             <>
                 {!!props.images?.length && (
                     <Image

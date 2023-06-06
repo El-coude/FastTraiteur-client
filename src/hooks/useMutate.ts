@@ -19,7 +19,7 @@ const useMutate = <BodyDataType, ResultDataType>(
             console.log(`${API_URI}/${endPoint}`);
             const res = await (
                 await fetch(
-                    `${"https://fasttraiteur.onrender.com"}/${endPoint}`,
+                    `${"https://cb12-105-235-139-250.ngrok-free.app"}/${endPoint}`,
                     {
                         method: options?.method || "post",
                         headers: {

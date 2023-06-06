@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { useLocation, useNavigate } from "react-router-native";
 import useAuthStore, { UserType } from "../../stores/AuthStore";
 import { OutlineButton, PrimaryButton } from "../../components/Button";
@@ -72,10 +72,8 @@ const Profile = () => {
         latitud: user?.latitud,
         address: user?.address,
     });
-
-    console.log(map);
     return (
-        <>
+        <View className="px-4 h-[92%]">
             <FileInput
                 name="profile"
                 defaultImageSrc={user?.imageUrl ? { uri: user.imageUrl } : dp}
@@ -126,7 +124,7 @@ const Profile = () => {
                 onPress={update}
                 loading={isLoading}
             />
-        </>
+        </View>
     );
 };
 

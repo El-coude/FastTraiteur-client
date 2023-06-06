@@ -3,6 +3,8 @@ import { View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigate } from "react-router-native";
+import { Octicons } from "@expo/vector-icons";
+
 const NavBar = () => {
     const [active, setActive] = useState(0);
     const navigate = useNavigate();
@@ -48,6 +50,20 @@ const NavBar = () => {
                     name="account"
                     size={24}
                     color={active == 2 ? "#FA4A0C" : "black"}
+                />
+            </View>
+            <View
+                onTouchStart={() => {
+                    setActive(3);
+                    navigate("/orders");
+                }}
+                className={`h-full flex-1 items-center justify-center ${
+                    active == 3 ? "border-t-2 border-pri-4 bg-slate-50" : ""
+                }`}>
+                <Octicons
+                    name="checklist"
+                    size={24}
+                    color={active == 3 ? "#FA4A0C" : "black"}
                 />
             </View>
         </View>

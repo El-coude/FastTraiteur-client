@@ -105,10 +105,10 @@ const Signup = () => {
                     setValue("c_password", "17102001cH");
                 }}
             />
-            <View className="flex items-center flex-row gap-2 mt-4">
+            <View className="flex items-center flex-row gap-2 mt-4 w-full">
                 <Text>Already have an account ?</Text>
                 <Link to="/login" className="">
-                    <Text className="text-pri-5 font-bold">Log in</Text>
+                    <Text className="text-pri-5 font-bold ">Log in</Text>
                 </Link>
             </View>
         </View>

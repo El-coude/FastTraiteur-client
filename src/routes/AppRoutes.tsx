@@ -12,6 +12,9 @@ import Profile from "../screens/profile/Profile";
 import Home from "../screens/home/Home";
 import Meal from "../screens/home/Meal";
 import Cart from "../screens/cart/Cart";
+import OrderTrack from "../screens/order/OrderTrack";
+import Orders from "../screens/order/Orders";
+import OrderConfirmation from "../screens/order/OrderConfirmation";
 
 const AppRoutes = () => {
     return (
@@ -78,6 +81,23 @@ const AppRoutes = () => {
                 element={
                     <WithNavBarDashboard>
                         <Cart />
+                    </WithNavBarDashboard>
+                }
+            />
+            <Route path="/order-confirm" element={<OrderConfirmation />} />
+            <Route
+                path="/orders"
+                element={
+                    <WithNavBarDashboard>
+                        <Orders />
+                    </WithNavBarDashboard>
+                }
+            />
+            <Route
+                path="/order/:id"
+                element={
+                    <WithNavBarDashboard>
+                        <OrderTrack />
                     </WithNavBarDashboard>
                 }
             />

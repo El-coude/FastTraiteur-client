@@ -10,12 +10,15 @@ const useFetch = <ResultDataType>(endPoint: string) => {
     } = useQuery<ResultDataType, any>(endPoint, async () => {
         console.log(`${API_URI}/${endPoint}`);
         const res = await (
-            await fetch(`${"https://fasttraiteur.onrender.com"}/${endPoint}`, {
-                method: "get",
-                headers: {
-                    "Content-type": "application/json",
-                },
-            })
+            await fetch(
+                `${"https://cb12-105-235-139-250.ngrok-free.app"}/${endPoint}`,
+                {
+                    method: "get",
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                }
+            )
         ).json();
         if (res.statusCode >= 400) {
             console.log(res);

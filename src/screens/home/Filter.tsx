@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Input from "../../components/Input";
 import { PrimaryButton } from "../../components/Button";
 import useFilterStore from "../../stores/MealFilter";
+import useAuthStore from "../../stores/AuthStore";
 
 const Filter = () => {
     const { price, setPrice, distance, setDistance } = useFilterStore(
@@ -27,6 +28,7 @@ const Filter = () => {
         setDistance(info.distance);
         setModal(false);
     };
+    const { user } = useAuthStore((state) => state);
 
     return (
         <View className="m-auto rounded-md">
@@ -115,6 +117,10 @@ const Filter = () => {
                             KM
                         </Text>
                     </View>
+                    <Text className="text-xl" style={{ fontFamily: "DM-Bold" }}>
+                        Your address is {user?.address} , change it in profile
+                        settings to get access to relavant restaurants
+                    </Text>
                     <PrimaryButton
                         title="Save filter"
                         style="mt-auto"

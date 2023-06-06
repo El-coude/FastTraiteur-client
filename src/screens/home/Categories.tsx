@@ -26,10 +26,10 @@ const Item = ({ item }: { item: Category }) => {
 
     return (
         <View
-            className={`rounded-full bg-slate-200 my-4 mr-1 px-10 py-3 ${
+            className={`rounded-full h-14 bg-slate-200 my-4 mr-1 px-10 py-3 ${
                 category === item.id.toString() ? "bg-pri-4 " : "bg-slate-100"
             }`}
-            onTouchStart={() =>
+            onTouchEnd={() =>
                 setCategory(
                     category === item.id.toString() ? "all" : item.id.toString()
                 )
